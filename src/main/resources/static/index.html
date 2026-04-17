@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack - Medicine Expiry Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* ==================== LOGIN PAGE ==================== */
+        .login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 100;
+        }
+
+        .login-page.hidden {
+            display: none;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-card h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .login-card .subtitle {
+            color: #999;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .demo-creds {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .error-message {
+            color: #ff5252;
+            font-size: 12px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* ==================== DASHBOARD LAYOUT ==================== */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard.hidden {
+            display: none;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-right: 12px;
+        }
+
+        .sidebar-header .user-info h3 {
+            color: #333;
+            font-size: 14px;
+        }
+
+        .sidebar-header .user-info p {
+            color: #999;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 5px;
+        }
+
+        .nav-menu a {
+            display: block;
+            padding: 12px 15px;
+            color: #666;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background: #f0f0f0;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 10px;
+            background: #ff5252;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 30px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #ff1744;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: #999;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .stat-card.danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, #ffa502 0%, #ff6b35 100%);
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+        }
+
+        h2 {
+            color: #333;
+            margin: 30px 0 20px 0;
+            font-size: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        table thead {
+            background: #f8f9fa;
+        }
+
+        table th {
+            padding: 15px;
+            text-align: left;
+            color: #333;
+            font-weight: 600;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #666;
+        }
+
+        table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-expired {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .badge-expiring {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .badge-low-stock {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .badge-ok {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-edit {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #5568d3;
+        }
+
+        .btn-delete {
+            background: #ff5252;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #ff1744;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* ==================== MODAL ==================== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .form-group-modal {
+            margin-bottom: 15px;
+        }
+
+        .form-group-modal label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group-modal input,
+        .form-group-modal select,
+        .form-group-modal textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* ==================== NOTIFICATIONS ==================== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 16px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.success {
+            border-left: 4px solid #4caf50;
+        }
+
+        .toast.error {
+            border-left: 4px solid #ff5252;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .admin-only {
+            display: none;
+        }
+
+        .admin-only.active {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+                order: 2;
+            }
+
+            .main-content {
+                order: 1;
+            }
+
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="login-page" id="loginPage">
+    <div class="login-card">
+        <h1>💊 MediTrack</h1>
+        <p class="subtitle">Medicine Expiry & Home Inventory Tracker</p>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="your@email.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            
+            <button type="submit" class="login-btn">Sign In</button>
+            <div class="error-message" id="loginError"></div>
+        </form>
+        
+        <div class="demo-creds">
+            <strong>Demo Accounts:</strong><br><br>
+            <strong style="color: #667eea;">Admin:</strong><br>
+            ritwik@admin.com / admin123<br><br>
+            <strong style="color: #667eea;">Users:</strong><br>
+            rishi@home.com / pass456<br>
+            rohit@home.com / rohit789<br>
+            ritesh@home.com / ritesh000
+        </div>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="avatar">👤</div>
+            <div class="user-info">
+                <h3 id="userName">User</h3>
+                <p id="userRole">Regular User</p>
+            </div>
+        </div>
+        
+        <ul class="nav-menu">
+            <li><a onclick="switchPage('dashboard')" class="active" data-page="dashboard">📊 Dashboard</a></li>
+            <li><a onclick="switchPage('medicines')" data-page="medicines">💊 Medicines</a></li>
+            <li><a onclick="switchPage('expiring')" data-page="expiring">⏰ Expiring Soon</a></li>
+            <li><a onclick="switchPage('reminders')" data-page="reminders">🔔 Reminders</a></li>
+            <li class="admin-only" id="adminMenu"><a onclick="switchPage('admin')" data-page="admin">⚙️ Admin Panel</a></li>
+        </ul>
+        
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </aside>
+
+    <main class="main-content">
+        <!-- DASHBOARD PAGE -->
+        <div class="page active" id="page-dashboard">
+            <h1>📊 Dashboard</h1>
+            <p class="page-subtitle">Welcome back! Here's your medicine inventory overview.</p>
+
+            <div class="grid-container">
+                <div class="stat-card success">
+                    <h3>Total Medicines</h3>
+                    <div class="stat-number" id="totalMedicines">24</div>
+                </div>
+                <div class="stat-card danger">
+                    <h3>Expired</h3>
+                    <div class="stat-number" id="expiredCount">2</div>
+                </div>
+                <div class="stat-card warning">
+                    <h3>Expiring Soon</h3>
+                    <div class="stat-number" id="expiringCount">5</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Low Stock</h3>
+                    <div class="stat-number" id="lowStockCount">3</div>
+                </div>
+            </div>
+
+            <h2>📋 Near Expiry Medicines (Next 30 Days)</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medicine Name</th>
+                            <th>Category</th>
+                            <th>Manufacturer</th>
+                            <th>Expiry Date</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="nearExpiryTableBody">
+                        <tr>
+                            <td colspan="7" class="loading"><div class="spinner"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>🔔 Active Reminders</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reminder</th>
+                            <th>Frequency</th>
+                            <th>Next Due</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="remindersTableBody">
+                        <tr>
+                            <td colspan="5" class="loading"><div class="spinner"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MEDICINES PAGE -->
+        <div class="page" id="page-medicines">
+            <div class="section-header">
+                <h1>💊 All Medicines</h1>
+                <button class="btn btn-primary" onclick="openMedicineModal()">+ Add Medicine</button>
+            </div>
+            <p class="page-subtitle">Manage your complete medicine inventory</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Medicine Name</th>
+                            <th>Category</th>
+                            <th>Manufacturer</th>
+                            <th>Batch No.</th>
+                            <th>Expiry</th>
+                            <th>Qty</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="medicinesTableBody">
+                        <tr>
+                            <td colspan="9" class="loading"><div class="spinner"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- EXPIRING PAGE -->
+        <div class="page" id="page-expiring">
+            <h1>⏰ Medicines Expiring Soon</h1>
+            <p class="page-subtitle">Medicines that need your attention in the next 30 days</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medicine Name</th>
+                            <th>Category</th>
+                            <th>Expiry Date</th>
+                            <th>Days Left</th>
+                            <th>Quantity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expiringTableBody">
+                        <tr>
+                            <td colspan="6" class="loading"><div class="spinner"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- REMINDERS PAGE -->
+        <div class="page" id="page-reminders">
+            <div class="section-header">
+                <h1>🔔 Reminders</h1>
+                <button class="btn btn-primary" onclick="openReminderModal()">+ Create Reminder</button>
+            </div>
+            <p class="page-subtitle">Set up reminders for inventory checks and medicine refills</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reminder Title</th>
+                            <th>Frequency</th>
+                            <th>Next Due</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allRemindersTableBody">
+                        <tr>
+                            <td colspan="5" class="loading"><div class="spinner"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ADMIN PANEL -->
+        <div class="page" id="page-admin">
+            <h1>⚙️ Admin Panel</h1>
+            <p class="page-subtitle">System Administration & Inventory Audits</p>
+
+            <h2>📊 System Statistics</h2>
+            <div class="grid-container">
+                <div class="stat-card success">
+                    <h3>All Users</h3>
+                    <div class="stat-number">4</div>
+                </div>
+                <div class="stat-card warning">
+                    <h3>Total Inventories</h3>
+                    <div class="stat-number" id="totalInventories">3</div>
+                </div>
+                <div class="stat-card danger">
+                    <h3>Critical Alerts</h3>
+                    <div class="stat-number">2</div>
+                </div>
+            </div>
+
+            <h2>📋 All Medicines (Audit View)</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Medicine</th>
+                            <th>Manufacturer</th>
+                            <th>Category</th>
+                            <th>Expiry</th>
+                            <th>Qty</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="auditTableBody">
+                        <tr>
+                            <td colspan="7" class="loading"><div class="spinner"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- MEDICINE MODAL -->
+<div class="modal" id="medicineModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="medicineModalTitle">Add New Medicine</h2>
+            <button class="close-btn" onclick="closeMedicineModal()">&times;</button>
+        </div>
+        <form id="medicineForm">
+            <div class="form-group-modal">
+                <label>Medicine Name *</label>
+                <input type="text" id="medicineName" required>
+            </div>
+            <div class="form-group-modal">
+                <label>Manufacturer *</label>
+                <input type="text" id="manufacturer" required>
+            </div>
+            <div class="form-group-modal">
+                <label>Category *</label>
+                <select id="category" required>
+                    <option value="">Select Category</option>
+                    <option value="TABLET">Tablet</option>
+                    <option value="SYRUP">Syrup</option>
+                    <option value="INJECTION">Injection</option>
+                    <option value="OINTMENT">Ointment</option>
+                    <option value="OTHER">Other</option>
+                </select>
+            </div>
+            <div class="form-group-modal">
+                <label>Batch Number *</label>
+                <input type="text" id="batchNumber" required>
+            </div>
+            <div class="form-group-modal">
+                <label>Expiry Date *</label>
+                <input type="date" id="expiryDate" required>
+            </div>
+            <div class="form-group-modal">
+                <label>Quantity *</label>
+                <input type="number" id="quantity" min="1" required>
+            </div>
+            <div class="form-group-modal">
+                <label>Minimum Stock *</label>
+                <input type="number" id="minimumStock" min="1" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" onclick="closeMedicineModal()">Cancel</button>
+                <button type="submit" class="btn btn-save">Save Medicine</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- REMINDER MODAL -->
+<div class="modal" id="reminderModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Create New Reminder</h2>
+            <button class="close-btn" onclick="closeReminderModal()">&times;</button>
+        </div>
+        <form id="reminderForm">
+            <div class="form-group-modal">
+                <label>Reminder Title *</label>
+                <input type="text" id="reminderTitle" placeholder="e.g., Weekly Inventory Check" required>
+            </div>
+            <div class="form-group-modal">
+                <label>Frequency *</label>
+                <select id="reminderFrequency" required>
+                    <option value="">Select Frequency</option>
+                    <option value="ONCE">Once</option>
+                    <option value="DAILY">Daily</option>
+                    <option value="WEEKLY">Weekly</option>
+                    <option value="MONTHLY">Monthly</option>
+                </select>
+            </div>
+            <div class="form-group-modal">
+                <label>Next Due Date *</label>
+                <input type="date" id="reminderDate" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" onclick="closeReminderModal()">Cancel</button>
+                <button type="submit" class="btn btn-save">Create Reminder</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// ==================== API CONFIGURATION ====================
+const API_BASE_URL = 'http://localhost:8080/api';
+let authToken = null;
+let currentUser = null;
+
+// ==================== AUTHENTICATION ====================
+async function login(event) {
+    event.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            authToken = data.token;
+            currentUser = data.user;
+            localStorage.setItem('authToken', authToken);
+            showDashboard();
+            loadDashboardData();
+        } else {
+            showError(data.message);
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        showError('Connection error. Try later.');
+    }
+}
+
+function logout() {
+    authToken = null;
+    currentUser = null;
+    localStorage.removeItem('authToken');
+    document.getElementById('loginPage').classList.remove('hidden');
+    document.getElementById('dashboard').classList.add('hidden');
+    document.getElementById('loginForm').reset();
+}
+
+function showDashboard() {
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    document.getElementById('userName').textContent = currentUser.name;
+    document.getElementById('userRole').textContent = currentUser.role === 'ADMIN' ? 'Admin' : 'Regular User';
+    
+    if (currentUser.role === 'ADMIN') {
+        document.getElementById('adminMenu').classList.add('active');
+    }
+}
+
+function showError(message) {
+    const errorDiv = document.getElementById('loginError');
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+    setTimeout(() => {
+        errorDiv.style.display = 'none';
+    }, 5000);
+}
+
+// ==================== PAGE NAVIGATION ====================
+function switchPage(pageName) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + pageName).classList.add('active');
+    document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
+    document.querySelector(`[data-page="${pageName}"]`).classList.add('active');
+
+    if (pageName === 'medicines') loadMedicines();
+    else if (pageName === 'expiring') loadExpiringMedicines();
+    else if (pageName === 'reminders') loadAllReminders();
+    else if (pageName === 'admin') loadAdminData();
+}
+
+// ==================== LOAD DATA ====================
+async function loadDashboardData() {
+    await loadStats();
+    await loadNearExpiryMedicines();
+    await loadReminders();
+}
+
+async function loadStats() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/inventory/stats`);
+        const stats = await response.json();
+        document.getElementById('totalMedicines').textContent = stats.totalMedicines;
+        document.getElementById('expiredCount').textContent = stats.expiredMedicines;
+        document.getElementById('expiringCount').textContent = stats.expiringMedicines;
+        document.getElementById('lowStockCount').textContent = stats.lowStockMedicines;
+    } catch (error) {
+        console.error('Error loading stats:', error);
+    }
+}
+
+async function loadNearExpiryMedicines() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/medicines/expiring/30`);
+        const medicines = await response.json();
+        const tbody = document.getElementById('nearExpiryTableBody');
+        tbody.innerHTML = '';
+
+        if (medicines.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No medicines expiring soon</td></tr>';
+            return;
+        }
+
+        medicines.forEach(med => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${med.name}</strong></td>
+                <td>${med.category}</td>
+                <td>${med.manufacturer}</td>
+                <td>${med.expiryDate}</td>
+                <td>${med.quantity}</td>
+                <td><span class="badge badge-${med.status.toLowerCase()}">${getBadgeText(med.status)}</span></td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn btn-edit" onclick="editMedicine(${med.id})">Edit</button>
+                        <button class="btn btn-delete" onclick="deleteMedicine(${med.id})">Delete</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error loading near expiry medicines:', error);
+        document.getElementById('nearExpiryTableBody').innerHTML = '<tr><td colspan="7" style="text-align: center; color: red;">Error loading data</td></tr>';
+    }
+}
+
+async function loadMedicines() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/medicines`);
+        const medicines = await response.json();
+        const tbody = document.getElementById('medicinesTableBody');
+        tbody.innerHTML = '';
+
+        medicines.forEach(med => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${med.id}</td>
+                <td><strong>${med.name}</strong></td>
+                <td>${med.category}</td>
+                <td>${med.manufacturer}</td>
+                <td>${med.batchNumber}</td>
+                <td>${med.expiryDate}</td>
+                <td>${med.quantity}</td>
+                <td><span class="badge badge-${med.status.toLowerCase()}">${getBadgeText(med.status)}</span></td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn btn-edit" onclick="editMedicine(${med.id})">Edit</button>
+                        <button class="btn btn-delete" onclick="deleteMedicine(${med.id})">Delete</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error loading medicines:', error);
+        document.getElementById('medicinesTableBody').innerHTML = '<tr><td colspan="9" style="text-align: center; color: red;">Error loading data</td></tr>';
+    }
+}
+
+async function loadExpiringMedicines() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/medicines/expiring/30`);
+        const medicines = await response.json();
+        const tbody = document.getElementById('expiringTableBody');
+        tbody.innerHTML = '';
+
+        medicines.forEach(med => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${med.name}</strong></td>
+                <td>${med.category}</td>
+                <td>${med.expiryDate}</td>
+                <td><strong>${med.daysUntilExpiry}</strong> days</td>
+                <td>${med.quantity}</td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn btn-edit" onclick="editMedicine(${med.id})">Edit</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error loading expiring medicines:', error);
+    }
+}
+
+async function loadReminders() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/reminders/active`);
+        const reminders = await response.json();
+        const tbody = document.getElementById('remindersTableBody');
+        tbody.innerHTML = '';
+
+        reminders.forEach(reminder => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${reminder.title}</strong></td>
+                <td>${reminder.frequency}</td>
+                <td>${reminder.nextDue}</td>
+                <td><span class="badge badge-ok">Active</span></td>
+                <td>
+                    <button class="btn btn-delete" onclick="cancelReminder(${reminder.id})">Cancel</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error loading reminders:', error);
+    }
+}
+
+async function loadAllReminders() {
+    await loadReminders();
+    const tbody = document.getElementById('allRemindersTableBody');
+    tbody.innerHTML = document.getElementById('remindersTableBody').innerHTML;
+}
+
+async function loadAdminData() {
+    try {
+        await loadStats();
+        const response = await fetch(`${API_BASE_URL}/medicines`);
+        const medicines = await response.json();
+        const tbody = document.getElementById('auditTableBody');
+        tbody.innerHTML = '';
+
+        medicines.forEach(med => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${med.id}</td>
+                <td><strong>${med.name}</strong></td>
+                <td>${med.manufacturer}</td>
+                <td>${med.category}</td>
+                <td>${med.expiryDate}</td>
+                <td>${med.quantity}</td>
+                <td><span class="badge badge-${med.status.toLowerCase()}">${getBadgeText(med.status)}</span></td>
+            `;
+            tbody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error loading admin data:', error);
+    }
+}
+
+// ==================== CRUD OPERATIONS ====================
+async function addMedicine(event) {
+    event.preventDefault();
+    const medicine = {
+        name: document.getElementById('medicineName').value,
+        manufacturer: document.getElementById('manufacturer').value,
+        category: document.getElementById('category').value,
+        batchNumber: document.getElementById('batchNumber').value,
+        expiryDate: document.getElementById('expiryDate').value,
+        quantity: parseInt(document.getElementById('quantity').value),
+        minimumStock: parseInt(document.getElementById('minimumStock').value)
+    };
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/medicines`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(medicine)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            showToast('Medicine added successfully!', 'success');
+            closeMedicineModal();
+            loadMedicines();
+            loadNearExpiryMedicines();
+        }
+    } catch (error) {
+        console.error('Error adding medicine:', error);
+        showToast('Error adding medicine', 'error');
+    }
+}
+
+async function editMedicine(id) {
+    // Redirect to edit form (simplified)
+    showToast('Edit functionality would open a form with current data', 'success');
+}
+
+async function deleteMedicine(id) {
+    if (!confirm('Are you sure you want to delete this medicine?')) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/medicines/${id}`, {
+            method: 'DELETE'
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            showToast('Medicine deleted successfully!', 'success');
+            loadMedicines();
+            loadNearExpiryMedicines();
+        }
+    } catch (error) {
+        console.error('Error deleting medicine:', error);
+        showToast('Error deleting medicine', 'error');
+    }
+}
+
+async function createReminder(event) {
+    event.preventDefault();
+    const reminder = {
+        title: document.getElementById('reminderTitle').value,
+        frequency: document.getElementById('reminderFrequency').value,
+        nextDue: document.getElementById('reminderDate').value,
+        active: true
+    };
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/reminders`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reminder)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            showToast('Reminder created successfully!', 'success');
+            closeReminderModal();
+            loadReminders();
+        }
+    } catch (error) {
+        console.error('Error creating reminder:', error);
+        showToast('Error creating reminder', 'error');
+    }
+}
+
+async function cancelReminder(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/reminders/${id}/cancel`, {
+            method: 'PUT'
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            showToast('Reminder cancelled', 'success');
+            loadReminders();
+        }
+    } catch (error) {
+        console.error('Error cancelling reminder:', error);
+    }
+}
+
+// ==================== MODAL FUNCTIONS ====================
+function openMedicineModal() {
+    document.getElementById('medicineForm').reset();
+    document.getElementById('medicineModalTitle').textContent = 'Add New Medicine';
+    document.getElementById('medicineModal').classList.add('show');
+}
+
+function closeMedicineModal() {
+    document.getElementById('medicineModal').classList.remove('show');
+}
+
+function openReminderModal() {
+    document.getElementById('reminderForm').reset();
+    document.getElementById('reminderModal').classList.add('show');
+}
+
+function closeReminderModal() {
+    document.getElementById('reminderModal').classList.remove('show');
+}
+
+// ==================== UTILITY FUNCTIONS ====================
+function getBadgeText(status) {
+    const badgeMap = {
+        'EXPIRED': '❌ Expired',
+        'EXPIRING': '⚠️  Expiring Soon',
+        'LOW_STOCK': '📦 Low Stock',
+        'OK': '✓ Good'
+    };
+    return badgeMap[status] || status;
+}
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+// ==================== EVENT LISTENERS ====================
+document.getElementById('loginForm').addEventListener('submit', login);
+document.getElementById('medicineForm').addEventListener('submit', addMedicine);
+document.getElementById('reminderForm').addEventListener('submit', createReminder);
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    let medicineModal = document.getElementById('medicineModal');
+    let reminderModal = document.getElementById('reminderModal');
+    
+    if (event.target == medicineModal) {
+        medicineModal.classList.remove('show');
+    }
+    if (event.target == reminderModal) {
+        reminderModal.classList.remove('show');
+    }
+}
+
+// ==================== INITIALIZE ====================
+window.addEventListener('load', () => {
+    const savedToken = localStorage.getItem('authToken');
+    if (savedToken) {
+        authToken = savedToken;
+        // Validate token and load user data
+        showDashboard();
+        loadDashboardData();
+    }
+});
+</script>
+
+</body>
+</html>

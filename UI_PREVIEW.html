@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Expiry Tracker - UI Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ==================== LOGIN PAGE ==================== */
+        .login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 100;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-card h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .login-card .subtitle {
+            color: #999;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .demo-creds {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .login-error {
+            color: #c62828;
+            background: #ffebee;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            display: none;
+            border-left: 4px solid #c62828;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        /* ==================== VISIBILITY RULES ==================== */
+        .login-page { display: flex; }
+        .dashboard { display: none; }
+
+        /* ==================== DASHBOARD LAYOUT ==================== */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .sidebar-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-right: 12px;
+        }
+
+        .sidebar-header .user-info h3 {
+            color: #333;
+            font-size: 14px;
+        }
+
+        .sidebar-header .user-info p {
+            color: #999;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 5px;
+        }
+
+        .nav-menu a {
+            display: block;
+            padding: 12px 15px;
+            color: #666;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background: #f0f0f0;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .nav-menu a::before {
+            margin-right: 10px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 10px;
+            background: #ff5252;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 30px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #ff1744;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .stat-card.danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, #ffa502 0%, #ff6b35 100%);
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+        }
+
+        /* ==================== TABLES ==================== */
+        h2 {
+            color: #333;
+            margin: 30px 0 20px 0;
+            font-size: 22px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        table thead {
+            background: #f8f9fa;
+        }
+
+        table th {
+            padding: 15px;
+            text-align: left;
+            color: #333;
+            font-weight: 600;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #666;
+        }
+
+        table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-expired {
+            background: #ff5252;
+            color: white;
+            box-shadow: 0 2px 8px rgba(255, 82, 82, 0.3);
+        }
+
+        .badge-expiring {
+            background: #ff9800;
+            color: white;
+            box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+        }
+
+        .badge-low-stock {
+            background: #ff9800;
+            color: white;
+            box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+        }
+
+        .badge-ok {
+            background: #4caf50;
+            color: white;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-edit {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #5568d3;
+        }
+
+        .btn-delete {
+            background: #ff5252;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #ff1744;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* ==================== MODAL ==================== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .form-group-modal {
+            margin-bottom: 15px;
+        }
+
+        .form-group-modal label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group-modal input,
+        .form-group-modal select,
+        .form-group-modal textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group-modal textarea {
+            resize: vertical;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* ==================== NOTIFICATIONS ==================== */
+        .notification-icon-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-icon-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff5252;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .notification-panel {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 350px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 999;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .notification-panel.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notification-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            gap: 15px;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .notification-item.expiry .notification-icon {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .notification-item.low-stock .notification-icon {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .notification-content h4 {
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .notification-content p {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .notification-time {
+            color: #bbb;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+                order: 2;
+            }
+
+            .main-content {
+                order: 1;
+            }
+
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+
+            .notification-panel {
+                width: calc(100% - 40px);
+                right: 20px;
+            }
+        }
+
+        /* ==================== ADMIN SPECIFIC ==================== */
+        .admin-badge {
+            background: #ffd700;
+            color: #333;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            color: #999;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ==================== PAGE 1: LOGIN ==================== -->
+<div class="login-page">
+    <div class="login-card">
+        <h1>💊 MediTrack</h1>
+        <p class="subtitle">Medicine Expiry & Home Inventory Tracker</p>
+        
+        <div class="login-error" id="loginError"></div>
+        
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="loginUsername" placeholder="Enter username" onkeypress="if(event.key === 'Enter') performLogin()">
+        </div>
+        
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" onkeypress="if(event.key === 'Enter') performLogin()">
+        </div>
+        
+        <button class="login-btn" onclick="performLogin()">Sign In</button>
+        
+        <div class="demo-creds">
+            <strong>Demo Credentials:</strong><br>
+            Username: Rishikesh<br>
+            Password: 1234
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PAGE 2: USER DASHBOARD ==================== -->
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; margin-right: 12px;">👤</div>
+            <div class="user-info">
+                <h3>Rishikesh</h3>
+                <p>Admin</p>
+            </div>
+        </div>
+        
+        <ul class="nav-menu">
+            <li><a class="active">📊 Dashboard</a></li>
+            <li><a>💊 My Inventory</a></li>
+            <li><a>🔔 Reminders</a></li>
+            <li><a>📋 Near Expiry</a></li>
+            <li><a onclick="document.getElementById('settingsModal').classList.add('show')">⚙️ Settings</a></li>
+        </ul>
+        
+        <button class="logout-btn">Logout</button>
+    </aside>
+
+    <main class="main-content">
+        <h1>📊 Dashboard</h1>
+        <p style="color: #999; margin-bottom: 20px;">Welcome back, Rishikesh! Here's your medicine inventory overview.</p>
+
+        <div class="grid-container">
+            <div class="stat-card success">
+                <h3>Total Medicines</h3>
+                <div class="stat-number">24</div>
+            </div>
+            <div class="stat-card danger">
+                <h3>Expired</h3>
+                <div class="stat-number">2</div>
+            </div>
+            <div class="stat-card warning">
+                <h3>Expiring Soon</h3>
+                <div class="stat-number">5</div>
+            </div>
+            <div class="stat-card">
+                <h3>Low Stock</h3>
+                <div class="stat-number">3</div>
+            </div>
+        </div>
+
+        <h2>📋 Near Expiry Medicines (Next 30 Days)</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medicine Name</th>
+                        <th>Category</th>
+                        <th>Manufacturer</th>
+                        <th>Expiry Date</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Aspirin 500mg</strong></td>
+                        <td>Tablet</td>
+                        <td>Bayer</td>
+                        <td>2026-04-15</td>
+                        <td>15</td>
+                        <td><span class="badge badge-expiring">⚠️ Expiring in 8 days</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn btn-edit">Edit</button>
+                                <button class="btn btn-delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cough Syrup</strong></td>
+                        <td>Syrup</td>
+                        <td>Cipla</td>
+                        <td>2026-05-20</td>
+                        <td>3</td>
+                        <td><span class="badge badge-expiring">⚠️ Expiring in 43 days</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn btn-edit">Edit</button>
+                                <button class="btn btn-delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Paracetamol 650mg</strong></td>
+                        <td>Tablet</td>
+                        <td>GSK</td>
+                        <td>2026-06-10</td>
+                        <td>50</td>
+                        <td><span class="badge badge-ok">✓ Good</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn btn-edit">Edit</button>
+                                <button class="btn btn-delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Amoxicillin 500mg</strong></td>
+                        <td>Tablet</td>
+                        <td>Cipla</td>
+                        <td>2026-04-25</td>
+                        <td>2</td>
+                        <td><span class="badge badge-expired">⚠️ Expiring in 16 days + Low Stock</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn btn-edit">Edit</button>
+                                <button class="btn btn-delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ibuprofen 400mg</strong></td>
+                        <td>Tablet</td>
+                        <td>Cipla</td>
+                        <td>2026-08-01</td>
+                        <td>45</td>
+                        <td><span class="badge badge-ok">✓ Good</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn btn-edit">Edit</button>
+                                <button class="btn btn-delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vitamin C 500mg</strong></td>
+                        <td>Tablet</td>
+                        <td>Sunpharma</td>
+                        <td>2026-12-10</td>
+                        <td>100</td>
+                        <td><span class="badge badge-ok">✓ Good</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn btn-edit">Edit</button>
+                                <button class="btn btn-delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>🔔 Active Reminders</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Reminder</th>
+                        <th>Frequency</th>
+                        <th>Next Due</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Check Aspirin Stock</strong></td>
+                        <td>Weekly</td>
+                        <td>2026-04-10</td>
+                        <td><span class="badge badge-ok">Active</span></td>
+                        <td>
+                            <button class="btn btn-delete">Cancel</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Paracetamol Inventory Review</strong></td>
+                        <td>Monthly</td>
+                        <td>2026-05-01</td>
+                        <td><span class="badge badge-ok">Active</span></td>
+                        <td>
+                            <button class="btn btn-delete">Cancel</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <button class="btn btn-primary">+ Add New Medicine</button>
+        </div>
+    </main>
+</div>
+
+<!-- ==================== NOTIFICATION BELL ICON ==================== -->
+<button class="notification-icon-btn" onclick="toggleNotifications()">
+    🔔
+    <span class="notification-badge">5</span>
+</button>
+
+<!-- ==================== NOTIFICATIONS PANEL (DROPDOWN) ==================== -->
+<div class="notification-panel" id="notificationPanel">
+    <div class="notification-header">
+        <h3>🔔 Notifications</h3>
+        <span style="color: #999; font-size: 12px;">5 New</span>
+    </div>
+    
+    <div class="notification-item expiry">
+        <div class="notification-icon">⚠️</div>
+        <div class="notification-content">
+            <h4>Aspirin Expiring Soon</h4>
+            <p>Your Aspirin 500mg expires on April 15, 2026</p>
+            <div class="notification-time">2 hours ago</div>
+        </div>
+    </div>
+    
+    <div class="notification-item low-stock">
+        <div class="notification-icon">📦</div>
+        <div class="notification-content">
+            <h4>Low Stock Alert</h4>
+            <p>Amoxicillin stock is below minimum level</p>
+            <div class="notification-time">5 hours ago</div>
+        </div>
+    </div>
+    
+    <div class="notification-item expiry">
+        <div class="notification-icon">⚠️</div>
+        <div class="notification-content">
+            <h4>Cough Syrup Expiring</h4>
+            <p>Your Cough Syrup expires on May 20, 2026</p>
+            <div class="notification-time">1 day ago</div>
+        </div>
+    </div>
+    
+    <div class="notification-item low-stock">
+        <div class="notification-icon">📦</div>
+        <div class="notification-content">
+            <h4>Reminder Due</h4>
+            <p>Weekly inventory check reminder is due</p>
+            <div class="notification-time">3 days ago</div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== EDIT/ADD MEDICINE MODAL ==================== -->
+<div id="medicineModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Add New Medicine</h2>
+            <button class="close-btn" onclick="closeMedicineModal()">×</button>
+        </div>
+        <form id="medicineForm">
+            <div class="form-group-modal">
+                <label>Medicine Name</label>
+                <input type="text" id="medicineName" placeholder="e.g., Aspirin 500mg" required>
+            </div>
+            <div class="form-group-modal">
+                <label>Category</label>
+                <select id="medicineCategory" required>
+                    <option value="">Select Category</option>
+                    <option value="Tablet">Tablet</option>
+                    <option value="Syrup">Syrup</option>
+                    <option value="Injection">Injection</option>
+                    <option value="Capsule">Capsule</option>
+                    <option value="Cream">Cream</option>
+                </select>
+            </div>
+            <div class="form-group-modal">
+                <label>Manufacturer</label>
+                <input type="text" id="manufacturer" placeholder="e.g., Bayer" required>
+            </div>
+            <div class="form-group-modal">
+                <label>Expiry Date</label>
+                <input type="date" id="expiryDate" required>
+            </div>
+            <div class="form-group-modal">
+                <label>Quantity</label>
+                <input type="number" id="quantity" placeholder="e.g., 15" min="1" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" onclick="closeMedicineModal()">Cancel</button>
+                <button type="submit" class="btn btn-save">Save Medicine</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== DELETE CONFIRMATION MODAL ==================== -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h2>Confirm Delete</h2>
+            <button class="close-btn" onclick="closeDeleteModal()">×</button>
+        </div>
+        <p id="deleteMessage" style="color: #666; margin-bottom: 20px;"></p>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <button type="button" class="btn btn-delete" onclick="confirmDelete()">Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MY INVENTORY MODAL ==================== -->
+<div id="inventoryModal" class="modal">
+    <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+            <h2>💊 My Complete Inventory</h2>
+            <button class="close-btn" onclick="document.getElementById('inventoryModal').classList.remove('show')">×</button>
+        </div>
+        <div class="table-wrapper" style="margin: 20px 0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medicine Name</th>
+                        <th>Category</th>
+                        <th>Manufacturer</th>
+                        <th>Expiry Date</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Aspirin 500mg</strong></td>
+                        <td>Tablet</td>
+                        <td>Bayer</td>
+                        <td>2026-04-15</td>
+                        <td>15</td>
+                        <td><span class="badge badge-expiring">⚠️ Expiring in 8 days</span></td>
+                        <td><div class="action-btns"><button class="btn btn-edit">Edit</button><button class="btn btn-delete">Delete</button></div></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cough Syrup</strong></td>
+                        <td>Syrup</td>
+                        <td>Cipla</td>
+                        <td>2026-05-20</td>
+                        <td>3</td>
+                        <td><span class="badge badge-expiring">⚠️ Expiring in 43 days</span></td>
+                        <td><div class="action-btns"><button class="btn btn-edit">Edit</button><button class="btn btn-delete">Delete</button></div></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Paracetamol 650mg</strong></td>
+                        <td>Tablet</td>
+                        <td>GSK</td>
+                        <td>2026-06-10</td>
+                        <td>50</td>
+                        <td><span class="badge badge-ok">✓ Good</span></td>
+                        <td><div class="action-btns"><button class="btn btn-edit">Edit</button><button class="btn btn-delete">Delete</button></div></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Amoxicillin 500mg</strong></td>
+                        <td>Tablet</td>
+                        <td>Cipla</td>
+                        <td>2026-04-25</td>
+                        <td>2</td>
+                        <td><span class="badge badge-expired">⚠️ Expiring in 16 days + Low Stock</span></td>
+                        <td><div class="action-btns"><button class="btn btn-edit">Edit</button><button class="btn btn-delete">Delete</button></div></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ibuprofen 400mg</strong></td>
+                        <td>Tablet</td>
+                        <td>Cipla</td>
+                        <td>2026-08-01</td>
+                        <td>45</td>
+                        <td><span class="badge badge-ok">✓ Good</span></td>
+                        <td><div class="action-btns"><button class="btn btn-edit">Edit</button><button class="btn btn-delete">Delete</button></div></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vitamin C 500mg</strong></td>
+                        <td>Tablet</td>
+                        <td>Sunpharma</td>
+                        <td>2026-12-10</td>
+                        <td>100</td>
+                        <td><span class="badge badge-ok">✓ Good</span></td>
+                        <td><div class="action-btns"><button class="btn btn-edit">Edit</button><button class="btn btn-delete">Delete</button></div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="document.getElementById('medicineModal').classList.add('show')">+ Add Medicine</button>
+            <button type="button" class="btn btn-cancel" onclick="document.getElementById('inventoryModal').classList.remove('show')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== REMINDERS MODAL ==================== -->
+<div id="remindersModal" class="modal">
+    <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+            <h2>🔔 Active Reminders</h2>
+            <button class="close-btn" onclick="document.getElementById('remindersModal').classList.remove('show')">×</button>
+        </div>
+        <div class="table-wrapper" style="margin: 20px 0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Reminder</th>
+                        <th>Frequency</th>
+                        <th>Next Due</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Check Aspirin Stock</strong></td>
+                        <td>Weekly</td>
+                        <td>2026-04-10</td>
+                        <td><span class="badge badge-ok">Active</span></td>
+                        <td><button class="btn btn-delete">Cancel</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Paracetamol Inventory Review</strong></td>
+                        <td>Monthly</td>
+                        <td>2026-05-01</td>
+                        <td><span class="badge badge-ok">Active</span></td>
+                        <td><button class="btn btn-delete">Cancel</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Check Vitamin Stock</strong></td>
+                        <td>Every 2 weeks</td>
+                        <td>2026-04-12</td>
+                        <td><span class="badge badge-ok">Active</span></td>
+                        <td><button class="btn btn-delete">Cancel</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Medicine Expiry Check</strong></td>
+                        <td>Monthly</td>
+                        <td>2026-05-09</td>
+                        <td><span class="badge badge-ok">Active</span></td>
+                        <td><button class="btn btn-delete">Cancel</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reorder Low Stock Items</strong></td>
+                        <td>As needed</td>
+                        <td>2026-04-11</td>
+                        <td><span class="badge badge-ok">Active</span></td>
+                        <td><button class="btn btn-delete">Cancel</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+            <h4 style="margin-bottom: 10px; color: #333;">Set New Reminder</h4>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="reminderTitle" placeholder="Reminder title" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <select id="reminderFrequency" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <option>Select Frequency</option>
+                    <option>Daily</option>
+                    <option>Weekly</option>
+                    <option>Monthly</option>
+                </select>
+                <button class="btn btn-primary" onclick="createReminder()">Create</button>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-cancel" onclick="document.getElementById('remindersModal').classList.remove('show')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== NEAR EXPIRY MODAL ==================== -->
+<div id="nearExpiryModal" class="modal">
+    <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+            <h2>⏰ Medicines Expiring Soon</h2>
+            <button class="close-btn" onclick="document.getElementById('nearExpiryModal').classList.remove('show')">×</button>
+        </div>
+        <div style="margin: 20px 0; display: grid; gap: 15px;">
+            <div style="padding: 15px; background: #ffebee; border-left: 4px solid #c62828; border-radius: 5px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <strong style="color: #c62828;">Aspirin 500mg</strong>
+                    <span style="color: #999; font-size: 12px;">Expires in 8 days</span>
+                </div>
+                <p style="color: #666; font-size: 14px; margin: 5px 0;">Manufacturer: Bayer | Quantity: 15 tablets</p>
+                <p style="color: #666; font-size: 14px; margin: 5px 0;">Expiry Date: <strong>2026-04-15</strong></p>
+                <div style="margin-top: 10px;">
+                    <button class="btn btn-edit">Edit</button>
+                    <button class="btn btn-delete">Delete</button>
+                </div>
+            </div>
+
+            <div style="padding: 15px; background: #fff3e0; border-left: 4px solid #e65100; border-radius: 5px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <strong style="color: #e65100;">Cough Syrup</strong>
+                    <span style="color: #999; font-size: 12px;">Expires in 43 days</span>
+                </div>
+                <p style="color: #666; font-size: 14px; margin: 5px 0;">Manufacturer: Cipla | Quantity: 3 units</p>
+                <p style="color: #666; font-size: 14px; margin: 5px 0;">Expiry Date: <strong>2026-05-20</strong></p>
+                <div style="margin-top: 10px;">
+                    <button class="btn btn-edit">Edit</button>
+                    <button class="btn btn-delete">Delete</button>
+                </div>
+            </div>
+
+            <div style="padding: 15px; background: #ffebee; border-left: 4px solid #c62828; border-radius: 5px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <strong style="color: #c62828;">Amoxicillin 500mg</strong>
+                    <span style="color: #999; font-size: 12px;">Expires in 16 days (Low Stock!)</span>
+                </div>
+                <p style="color: #666; font-size: 14px; margin: 5px 0;">Manufacturer: Cipla | Quantity: 2 tablets</p>
+                <p style="color: #666; font-size: 14px; margin: 5px 0;">Expiry Date: <strong>2026-04-25</strong></p>
+                <p style="color: #c62828; font-size: 13px; margin: 8px 0;"><strong>⚠️ Warning: Expiring soon AND Low stock detected!</strong></p>
+                <div style="margin-top: 10px;">
+                    <button class="btn btn-primary">Reorder</button>
+                    <button class="btn btn-edit">Edit</button>
+                    <button class="btn btn-delete">Delete</button>
+                </div>
+            </div>
+        </div>
+        <div style="margin: 20px 0; padding: 15px; background: #e8f5e9; border-radius: 5px;">
+            <p style="color: #2e7d32; font-size: 14px;"><strong>💡 Tip:</strong> Consider disposing of expired medicines properly and restocking items expiring soon.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="exportNearExpiryReport()">Export Report</button>
+            <button type="button" class="btn btn-cancel" onclick="document.getElementById('nearExpiryModal').classList.remove('show')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SETTINGS MODAL ==================== -->
+<div id="settingsModal" class="modal">
+    <div class="modal-content" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+            <h2>⚙️ Settings</h2>
+            <button class="close-btn" onclick="document.getElementById('settingsModal').classList.remove('show')">×</button>
+        </div>
+        
+        <div style="padding: 20px 0;">
+            <!-- Notification Settings -->
+            <div style="margin-bottom: 25px; padding: 20px; background: #f0f0f0; border-radius: 8px; border-left: 4px solid #ff9800;">
+                <h4 style="color: #333; margin-bottom: 15px; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">🔔 Notifications</h4>
+                
+                <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #333; font-weight: 600;">Enable Expiry Alerts</span>
+                    <input type="checkbox" checked style="width: 22px; height: 22px; cursor: pointer; accent-color: #667eea;">
+                </div>
+                
+                <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #333; font-weight: 600;">Enable Low Stock Alerts</span>
+                    <input type="checkbox" checked style="width: 22px; height: 22px; cursor: pointer; accent-color: #667eea;">
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #333; font-weight: 600;">Enable Reminder Notifications</span>
+                    <input type="checkbox" checked style="width: 22px; height: 22px; cursor: pointer; accent-color: #667eea;">
+                </div>
+            </div>
+
+            <!-- Privacy Settings -->
+            <div style="margin-bottom: 25px; padding: 20px; background: #f0f0f0; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #333; margin-bottom: 15px; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">🔒 Privacy & Data</h4>
+                
+                <div style="margin-bottom: 12px;">
+                    <button class="btn" style="background: #667eea; color: white; padding: 11px 16px; width: auto; border: none; border-radius: 5px; font-weight: 600; cursor: pointer; font-size: 14px;">📥 Export All Data</button>
+                </div>
+                
+                <div style="margin-bottom: 0;">
+                    <button class="btn" style="background: #ff9800; color: white; padding: 11px 16px; width: auto; border: none; border-radius: 5px; font-weight: 600; cursor: pointer; font-size: 14px;">🗑️ Clear Cache</button>
+                </div>
+            </div>
+
+            <!-- Account Settings -->
+            <div style="margin-bottom: 25px; padding: 20px; background: #f0f0f0; border-radius: 8px; border-left: 4px solid #2196f3;">
+                <h4 style="color: #333; margin-bottom: 15px; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">👤 Account</h4>
+                
+                <div style="margin-bottom: 15px;">
+                    <p style="color: #333; font-size: 15px; margin: 0; font-weight: 600;"><span style="color: #666;">Current User:</span> <span style="color: #333; font-weight: 700;">Rishikesh</span></p>
+                </div>
+                
+                <div style="margin-bottom: 12px;">
+                    <button class="btn" style="background: #667eea; color: white; padding: 11px 16px; width: auto; border: none; border-radius: 5px; font-weight: 600; cursor: pointer; font-size: 14px;">🔑 Change Password</button>
+                </div>
+                
+                <div>
+                    <button class="btn" style="background: #ff5252; color: white; padding: 11px 16px; width: auto; border: none; border-radius: 5px; font-weight: 600; cursor: pointer; font-size: 14px;" onclick="confirmLogout()">🚪 Logout</button>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div style="margin-top: 25px; padding: 20px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3; text-align: center;">
+                <p style="color: #1565c0; font-size: 14px; margin: 5px 0; font-weight: 700;"><strong>💊 Medicine Tracker v1.0.0</strong></p>
+                <p style="color: #0d47a1; font-size: 13px; margin: 8px 0; font-weight: 600;">© 2026 OOAD Project Team</p>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button type="button" class="btn btn-cancel" style="background: #f44336; color: white; border: none; padding: 11px 20px; border-radius: 5px; font-weight: 600; cursor: pointer; font-size: 14px;" onclick="document.getElementById('settingsModal').classList.remove('show')">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentEditingRow = null;
+    let deleteCallback = null;
+
+    // ==================== NOTIFICATION DROPDOWN TOGGLE ====================
+    function toggleNotifications() {
+        const panel = document.getElementById('notificationPanel');
+        panel.classList.toggle('show');
+    }
+
+    // Close notification panel when clicking outside
+    document.addEventListener('click', function(e) {
+        const panel = document.getElementById('notificationPanel');
+        const btn = document.querySelector('.notification-icon-btn');
+        
+        if (!panel.contains(e.target) && !btn.contains(e.target)) {
+            panel.classList.remove('show');
+        }
+    });
+
+    // ==================== CREATE REMINDER ====================
+    function createReminder() {
+        const title = document.getElementById('reminderTitle').value.trim();
+        const frequency = document.getElementById('reminderFrequency').value;
+        
+        if (!title || frequency === 'Select Frequency') {
+            alert('❌ Please fill in all fields');
+            return;
+        }
+        
+        // Add to reminders table
+        const remindersTable = document.getElementById('remindersModal').querySelector('table tbody');
+        const newRow = remindersTable.insertRow();
+        
+        // Calculate next due date
+        const today = new Date();
+        let nextDueDate = new Date(today);
+        if (frequency === 'Daily') {
+            nextDueDate.setDate(nextDueDate.getDate() + 1);
+        } else if (frequency === 'Weekly') {
+            nextDueDate.setDate(nextDueDate.getDate() + 7);
+        } else if (frequency === 'Monthly') {
+            nextDueDate.setMonth(nextDueDate.getMonth() + 1);
+        }
+        
+        const dueDateStr = nextDueDate.toISOString().split('T')[0];
+        
+        newRow.innerHTML = `
+            <td><strong>${title}</strong></td>
+            <td>${frequency}</td>
+            <td>${dueDateStr}</td>
+            <td><span class="badge badge-ok">Active</span></td>
+            <td><button class="btn btn-delete">Cancel</button></td>
+        `;
+        
+        // Setup the delete button for the new row
+        const deleteBtn = newRow.querySelector('.btn-delete');
+        deleteBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm(`Cancel reminder "${title}"?`)) {
+                newRow.remove();
+                alert(`✅ Reminder "${title}" cancelled`);
+                filterAndDisplayReminders();
+            }
+        });
+        
+        alert(`✅ Reminder "${title}" created with frequency: ${frequency}`);
+        document.getElementById('reminderTitle').value = '';
+        document.getElementById('reminderFrequency').value = 'Select Frequency';
+        filterAndDisplayReminders();
+    }
+
+    // ==================== EXPORT NEAR EXPIRY REPORT ====================
+    function exportNearExpiryReport() {
+        const report = `
+MEDICINE NEAR EXPIRY REPORT
+Generated: ${new Date().toLocaleString()}
+
+CRITICAL (Expiring Soon):
+1. Aspirin 500mg - Expires 2026-04-15 (8 days) - Qty: 15
+2. Amoxicillin 500mg - Expires 2026-04-25 (17 days) - Qty: 2 ⚠️ LOW STOCK
+3. Cough Syrup - Expires 2026-05-20 (43 days) - Qty: 3
+
+ACTION ITEMS:
+- Dispose of Aspirin properly before expiry
+- Reorder Amoxicillin immediately (low stock)
+- Plan to use or dispose of Cough Syrup
+
+Generated by Medicine Tracker v1.0.0
+        `;
+        
+        const blob = new Blob([report], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `medicine_expiry_report_${new Date().getTime()}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        alert('✅ Report exported successfully!');
+    }
+
+    // ==================== CONFIRM LOGOUT ====================
+    function confirmLogout() {
+        if (confirm('Are you sure you want to logout?')) {
+            document.getElementById('settingsModal').classList.remove('show');
+            document.querySelector('.dashboard').style.display = 'none';
+            document.querySelector('.login-page').style.display = 'flex';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginError').classList.remove('show');
+            alert('✅ Logged out successfully');
+        }
+    }
+
+    // ==================== UPDATE STATISTICS ====================
+    function updateStatistics() {
+        const mainContentTable = document.querySelector('.main-content table tbody');
+        const rows = mainContentTable.querySelectorAll('tr');
+        const today = new Date();
+        
+        let totalMedicines = rows.length;
+        let expired = 0;
+        let expiringSoon = 0;
+        let lowStock = 0;
+
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length >= 6) {
+                const statusCell = cells[5].textContent.trim();
+                
+                if (statusCell.includes('Expired')) {
+                    expired++;
+                }
+                if (statusCell.includes('Expiring')) {
+                    expiringSoon++;
+                }
+                if (statusCell.includes('Low Stock')) {
+                    lowStock++;
+                }
+            }
+        });
+
+        // Update stat cards
+        document.querySelectorAll('.stat-number')[0].textContent = totalMedicines;
+        document.querySelectorAll('.stat-number')[1].textContent = expired;
+        document.querySelectorAll('.stat-number')[2].textContent = expiringSoon;
+        document.querySelectorAll('.stat-number')[3].textContent = lowStock;
+    }
+
+    // ==================== LOGIN FUNCTIONALITY ====================
+    function performLogin() {
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const errorDisplay = document.getElementById('loginError');
+        
+        // Validate credentials
+        const correctUsername = 'Rishikesh';
+        const correctPassword = '1234';
+        
+        if (!username || !password) {
+            errorDisplay.textContent = '❌ Please enter both username and password';
+            errorDisplay.classList.add('show');
+            return;
+        }
+        
+        if (username !== correctUsername) {
+            errorDisplay.textContent = `❌ Invalid username. Please try again.`;
+            errorDisplay.classList.add('show');
+            return;
+        }
+        
+        if (password !== correctPassword) {
+            errorDisplay.textContent = `❌ Invalid password. Please try again.`;
+            errorDisplay.classList.add('show');
+            return;
+        }
+        
+        // Login successful
+        errorDisplay.classList.remove('show');
+        document.querySelector('.login-page').style.display = 'none';
+        document.querySelector('.dashboard').style.display = 'grid';
+        document.getElementById('loginUsername').value = '';
+        document.getElementById('loginPassword').value = '';
+    }
+
+    // ==================== LOGOUT FUNCTIONALITY ====================
+    document.querySelector('.logout-btn').addEventListener('click', function() {
+        if (confirm('Are you sure you want to logout?')) {
+            document.querySelector('.dashboard').style.display = 'none';
+            document.querySelector('.login-page').style.display = 'flex';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginError').classList.remove('show');
+            alert('✅ Logged out successfully');
+        }
+    });
+
+    // ==================== NAVIGATION MENU ====================
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+        link.addEventListener('click', function() {
+            document.querySelectorAll('.nav-menu a').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            const menuText = this.textContent.trim();
+            
+            if (menuText.includes('My Inventory')) {
+                document.getElementById('inventoryModal').classList.add('show');
+            } else if (menuText.includes('Reminders')) {
+                document.getElementById('remindersModal').classList.add('show');
+            } else if (menuText.includes('Near Expiry')) {
+                document.getElementById('nearExpiryModal').classList.add('show');
+            }
+        });
+    });
+
+    // ==================== ADD NEW MEDICINE ====================
+    document.querySelector('.btn-primary').addEventListener('click', function() {
+        currentEditingRow = null;
+        document.getElementById('modalTitle').textContent = 'Add New Medicine';
+        document.getElementById('medicineForm').reset();
+        document.getElementById('medicineModal').classList.add('show');
+    });
+
+    // ==================== EDIT BUTTON FUNCTIONALITY ====================
+    function setupEditButtons() {
+        document.querySelectorAll('.btn-edit').forEach(btn => {
+            btn.removeEventListener('click', handleEdit);
+            btn.addEventListener('click', handleEdit);
+        });
+    }
+
+    function handleEdit(e) {
+        e.preventDefault();
+        const row = e.target.closest('tr');
+        const cells = row.querySelectorAll('td');
+        
+        document.getElementById('modalTitle').textContent = 'Edit Medicine';
+        document.getElementById('medicineName').value = cells[0].textContent.trim();
+        document.getElementById('medicineCategory').value = cells[1].textContent.trim();
+        document.getElementById('manufacturer').value = cells[2].textContent.trim();
+        document.getElementById('expiryDate').value = cells[3].textContent.trim();
+        document.getElementById('quantity').value = cells[4].textContent.trim();
+        
+        currentEditingRow = row;
+        document.getElementById('medicineModal').classList.add('show');
+    }
+
+    // ==================== DELETE BUTTON FUNCTIONALITY ====================
+    function setupDeleteButtons() {
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.removeEventListener('click', handleDelete);
+            btn.addEventListener('click', handleDelete);
+        });
+    }
+
+    function handleDelete(e) {
+        e.preventDefault();
+        const row = e.target.closest('tr');
+        const medicineName = row.querySelector('td strong')?.textContent || row.querySelector('td').textContent;
+        
+        document.getElementById('deleteMessage').textContent = `Are you sure you want to delete "${medicineName}"? This action cannot be undone.`;
+        deleteCallback = () => {
+            row.remove();
+            updateStatistics();
+            alert(`✅ "${medicineName}" deleted successfully`);
+        };
+        document.getElementById('deleteModal').classList.add('show');
+    }
+
+    // ==================== MODAL FUNCTIONS ====================
+    function closeMedicineModal() {
+        document.getElementById('medicineModal').classList.remove('show');
+        document.getElementById('medicineForm').reset();
+        currentEditingRow = null;
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('show');
+        deleteCallback = null;
+    }
+
+    function confirmDelete() {
+        if (deleteCallback) {
+            deleteCallback();
+        }
+        closeDeleteModal();
+    }
+
+    // ==================== FORM SUBMISSION ====================
+    document.getElementById('medicineForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('medicineName').value;
+        const category = document.getElementById('medicineCategory').value;
+        const manufacturer = document.getElementById('manufacturer').value;
+        const expiry = document.getElementById('expiryDate').value;
+        const quantity = document.getElementById('quantity').value;
+
+        if (currentEditingRow) {
+            // Update existing row with recalculated status
+            const cells = currentEditingRow.querySelectorAll('td');
+            cells[0].innerHTML = `<strong>${name}</strong>`;
+            cells[1].textContent = category;
+            cells[2].textContent = manufacturer;
+            cells[3].textContent = expiry;
+            cells[4].textContent = quantity;
+            
+            // Recalculate status badge
+            const today = new Date();
+            const expiryDate = new Date(expiry);
+            const daysUntilExpiry = Math.floor((expiryDate - today) / (1000 * 60 * 60 * 24));
+            const isLowStock = quantity < 5;
+            
+            let statusBadge = '✓ Good';
+            let badgeClass = 'badge-ok';
+            
+            if (daysUntilExpiry < 0) {
+                statusBadge = '❌ Expired';
+                badgeClass = 'badge-expired';
+            } else if (daysUntilExpiry <= 30 && isLowStock) {
+                statusBadge = `⚠️ Expiring in ${daysUntilExpiry} days + Low Stock`;
+                badgeClass = 'badge-expired';
+            } else if (daysUntilExpiry <= 30) {
+                statusBadge = `⚠️ Expiring in ${daysUntilExpiry} days`;
+                badgeClass = 'badge-expiring';
+            } else if (isLowStock) {
+                statusBadge = '📦 Low Stock';
+                badgeClass = 'badge-low-stock';
+            }
+            
+            // Update the badge
+            cells[5].innerHTML = `<span class="badge ${badgeClass}">${statusBadge}</span>`;
+            
+            alert(`✅ Medicine "${name}" updated successfully`);
+            updateStatistics();
+        } else {
+            // Add new row to BOTH dashboard table and inventory modal table
+            const dashboardTbody = document.querySelector('.main-content table tbody');
+            const inventoryTbody = document.getElementById('inventoryModal').querySelector('table tbody');
+            
+            // Determine status
+            const today = new Date();
+            const expiryDate = new Date(expiry);
+            const daysUntilExpiry = Math.floor((expiryDate - today) / (1000 * 60 * 60 * 24));
+            const isLowStock = quantity < 5;
+            
+            let statusBadge = '✓ Good';
+            let badgeClass = 'badge-ok';
+            
+            if (daysUntilExpiry < 0) {
+                statusBadge = '❌ Expired';
+                badgeClass = 'badge-expired';
+            } else if (daysUntilExpiry <= 30 && isLowStock) {
+                statusBadge = `⚠️ Expiring in ${daysUntilExpiry} days + Low Stock`;
+                badgeClass = 'badge-expired';
+            } else if (daysUntilExpiry <= 30) {
+                statusBadge = `⚠️ Expiring in ${daysUntilExpiry} days`;
+                badgeClass = 'badge-expiring';
+            } else if (isLowStock) {
+                statusBadge = '📦 Low Stock';
+                badgeClass = 'badge-low-stock';
+            }
+            
+            const rowHTML = `
+                <td><strong>${name}</strong></td>
+                <td>${category}</td>
+                <td>${manufacturer}</td>
+                <td>${expiry}</td>
+                <td>${quantity}</td>
+                <td><span class="badge ${badgeClass}">${statusBadge}</span></td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn btn-edit">Edit</button>
+                        <button class="btn btn-delete">Delete</button>
+                    </div>
+                </td>
+            `;
+            
+            // Add to dashboard
+            const dashboardRow = dashboardTbody.insertRow();
+            dashboardRow.innerHTML = rowHTML;
+            
+            // Add to inventory modal
+            const inventoryRow = inventoryTbody.insertRow();
+            inventoryRow.innerHTML = rowHTML;
+            
+            setupEditButtons();
+            setupDeleteButtons();
+            setupModalButtonsContent();
+            alert(`✅ Medicine "${name}" added successfully`);
+            updateStatistics();
+            filterAndDisplayReminders();
+        }
+        
+        closeMedicineModal();
+    });
+
+    // ==================== REMINDER CANCEL ====================
+    function setupReminderCancelButtons() {
+        const reminderTable = document.querySelectorAll('table')[1]; // Second table (reminders)
+        const cancelButtons = reminderTable.querySelectorAll('.btn-delete');
+        
+        cancelButtons.forEach(btn => {
+            btn.removeEventListener('click', handleReminderCancel);
+            btn.addEventListener('click', handleReminderCancel);
+        });
+    }
+
+    function handleReminderCancel(e) {
+        e.preventDefault();
+        const row = e.target.closest('tr');
+        const reminderName = row.querySelector('td strong').textContent;
+        
+        if (confirm(`Cancel reminder "${reminderName}"?`)) {
+            row.remove();
+            alert(`✅ Reminder "${reminderName}" cancelled`);
+            filterAndDisplayReminders();
+        }
+    }
+
+    // ==================== FILTER ACTIVE REMINDERS ====================
+    function filterAndDisplayReminders() {
+        const dashboardReminderTbody = document.querySelector('.main-content table:nth-of-type(2) tbody');
+        const remindersModalTable = document.getElementById('remindersModal').querySelector('table tbody');
+        const today = new Date();
+        
+        // Clear dashboard reminders
+        dashboardReminderTbody.innerHTML = '';
+        
+        // Go through all reminders in the modal
+        remindersModalTable.querySelectorAll('tr').forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const frequency = cells[1].textContent.trim();
+            const dueDateStr = cells[2].textContent.trim();
+            const dueDate = new Date(dueDateStr);
+            
+            // Calculate days until due date
+            const daysUntilDue = Math.floor((dueDate - today) / (1000 * 60 * 60 * 24));
+            
+            // Show only Daily reminders that are within 7 days of due date
+            if (frequency === 'Daily' && daysUntilDue >= 0 && daysUntilDue <= 7) {
+                const newRow = dashboardReminderTbody.insertRow();
+                newRow.innerHTML = row.innerHTML;
+            }
+        });
+    }
+
+    // ==================== INITIALIZE ====================
+    updateStatistics();
+    setupEditButtons();
+    setupDeleteButtons();
+    setupReminderCancelButtons();
+    setupModalButtonsContent();
+    filterAndDisplayReminders();
+
+    // Also setup buttons in modals
+    function setupModalButtonsContent() {
+        // Setup inventory modal buttons
+        const inventoryModal = document.getElementById('inventoryModal');
+        if (inventoryModal) {
+            const editBtns = inventoryModal.querySelectorAll('.btn-edit');
+            const deleteBtns = inventoryModal.querySelectorAll('.btn-delete');
+            
+            editBtns.forEach(btn => {
+                btn.removeEventListener('click', handleInventoryEdit);
+                btn.addEventListener('click', handleInventoryEdit);
+            });
+            
+            deleteBtns.forEach(btn => {
+                btn.removeEventListener('click', handleInventoryDelete);
+                btn.addEventListener('click', handleInventoryDelete);
+            });
+        }
+
+        // Setup near expiry modal buttons
+        const nearExpiryModal = document.getElementById('nearExpiryModal');
+        if (nearExpiryModal) {
+            const deleteBtns = nearExpiryModal.querySelectorAll('.btn-delete');
+            deleteBtns.forEach(btn => {
+                btn.removeEventListener('click', handleNearExpiryDelete);
+                btn.addEventListener('click', handleNearExpiryDelete);
+            });
+        }
+
+        // Setup reminders modal cancel buttons
+        const remindersModal = document.getElementById('remindersModal');
+        if (remindersModal) {
+            const cancelBtns = remindersModal.querySelectorAll('.btn-delete');
+            cancelBtns.forEach(btn => {
+                btn.removeEventListener('click', handleReminderCancel);
+                btn.addEventListener('click', handleReminderCancel);
+            });
+        }
+    }
+
+    function handleInventoryEdit(e) {
+        e.preventDefault();
+        const row = e.target.closest('tr');
+        const cells = row.querySelectorAll('td');
+        
+        document.getElementById('modalTitle').textContent = 'Edit Medicine';
+        document.getElementById('medicineName').value = cells[0].textContent.trim();
+        document.getElementById('medicineCategory').value = cells[1].textContent.trim();
+        document.getElementById('manufacturer').value = cells[2].textContent.trim();
+        document.getElementById('expiryDate').value = cells[3].textContent.trim();
+        document.getElementById('quantity').value = cells[4].textContent.trim();
+        
+        currentEditingRow = row;
+        document.getElementById('medicineModal').classList.add('show');
+    }
+
+    function handleInventoryDelete(e) {
+        e.preventDefault();
+        const row = e.target.closest('tr');
+        const medicineName = row.querySelector('td strong')?.textContent || row.querySelector('td').textContent;
+        
+        if (confirm(`Delete "${medicineName}"? This action cannot be undone.`)) {
+            row.remove();
+            // Also remove from dashboard table
+            const dashboardTbody = document.querySelector('.main-content table tbody');
+            const dashboardRows = dashboardTbody.querySelectorAll('tr');
+            dashboardRows.forEach(dashRow => {
+                if (dashRow.querySelector('strong').textContent === medicineName) {
+                    dashRow.remove();
+                }
+            });
+            alert(`✅ "${medicineName}" deleted successfully`);
+            updateStatistics();
+            filterAndDisplayReminders();
+        }
+    }
+
+    function handleNearExpiryDelete(e) {
+        e.preventDefault();
+        const card = e.target.closest('[style*="padding: 15px"]');
+        const name = card.querySelector('strong').textContent;
+        
+        if (confirm(`Delete "${name}"? This action cannot be undone.`)) {
+            card.remove();
+            // Also remove from inventory tables
+            const inventoryModal = document.getElementById('inventoryModal');
+            const mainTable = document.querySelector('.main-content table tbody');
+            
+            [inventoryModal.querySelector('table tbody'), mainTable].forEach(tbody => {
+                if (tbody) {
+                    const rows = tbody.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        if (row.querySelector('strong').textContent === name) {
+                            row.remove();
+                        }
+                    });
+                }
+            });
+            alert(`✅ "${name}" deleted successfully`);
+            updateStatistics();
+            filterAndDisplayReminders();
+        }
+    }
+
+    setupModalButtonsContent();
+
+    // ==================== CLOSE MODAL ON OUTSIDE CLICK ====================
+    window.addEventListener('click', function(e) {
+        const medicineModal = document.getElementById('medicineModal');
+        const deleteModal = document.getElementById('deleteModal');
+        const inventoryModal = document.getElementById('inventoryModal');
+        const remindersModal = document.getElementById('remindersModal');
+        const nearExpiryModal = document.getElementById('nearExpiryModal');
+        const settingsModal = document.getElementById('settingsModal');
+        
+        if (e.target === medicineModal) {
+            closeMedicineModal();
+        }
+        if (e.target === deleteModal) {
+            closeDeleteModal();
+        }
+        if (e.target === inventoryModal) {
+            inventoryModal.classList.remove('show');
+        }
+        if (e.target === remindersModal) {
+            remindersModal.classList.remove('show');
+        }
+        if (e.target === nearExpiryModal) {
+            nearExpiryModal.classList.remove('show');
+        }
+        if (e.target === settingsModal) {
+            settingsModal.classList.remove('show');
+        }
+    });
+
+    // ==================== Tab switching functionality ====================
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+</script>
+
+</body>
+</html>
